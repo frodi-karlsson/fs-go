@@ -11,4 +11,4 @@ named functions for combinations of arguments.
 I'm leaning toward a combination of a configuration struct and a simple non-configurable
 version of the function for the "default" case, but some convention exploration is needed, because I haven't read enough Go.
 
-Until then, we will have no append option in our WriteFile functions :^)
+Until then, we will have no indent option in our WriteJson functions, among other options :^)

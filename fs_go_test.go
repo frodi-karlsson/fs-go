@@ -495,6 +495,60 @@ func TestWriteBytesWithMode(t *testing.T) {
 	})
 }
 
+func TestAppendText(t *testing.T) {
+	// Expect to append content to a file
+	t.Run("append text file", func(t *testing.T) {
+		path := "append_text.txt"
+		defer os.Remove(path)
+
+		err := WriteText(path, "test content")
+		if err != nil {
+			t.Fatalf("WriteText failed: %v", err)
+		}
+
+		err = AppendText(path, " appended")
+		if err != nil {
+			t.Errorf("AppendText failed: %v", err)
+		}
+
+		content, err := ReadText(path)
+		if err != nil {
+			t.Errorf("ReadText failed: %v", err)
+		}
+
+		if content != "test content appended" {
+			t.Errorf("Expected content to be 'test content appended', got '%s'", content)
+		}
+	})
+}
+
+func TestAppendBytes(t *testing.T) {
+	// Expect to append content to a file
+	t.Run("append bytes file", func(t *testing.T) {
+		path := "append_bytes.txt"
+		defer os.Remove(path)
+
+		err := WriteText(path, "test content")
+		if err != nil {
+			t.Fatalf("WriteText failed: %v", err)
+		}
+
+		err = AppendBytes(path, []byte(" appended"))
+		if err != nil {
+			t.Errorf("AppendBytes failed: %v", err)
+		}
+
+		content, err := ReadText(path)
+		if err != nil {
+			t.Errorf("ReadText failed: %v", err)
+		}
+
+		if content != "test content appended" {
+			t.Errorf("Expected content to be 'test content appended', got '%s'", content)
+		}
+	})
+}
+
 func TestCopyFile(t *testing.T) {
 	// Expect to copy a file
 	t.Run("copy file", func(t *testing.T) {

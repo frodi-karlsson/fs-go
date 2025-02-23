@@ -257,6 +257,32 @@ func WriteBytesWithMode(path string, content []byte, mode os.FileMode) error {
 	return nil
 }
 
+// AppendText appends a string to a file.
+func AppendText(path, content string) error {
+	err := AppendBytes(path, []byte(content))
+	if err != nil {
+		return fmt.Errorf("AppendText failed to append content to file: %w", err)
+	}
+
+	return nil
+}
+
+// AppendBytes appends a byte slice to a file.
+func AppendBytes(path string, content []byte) error {
+	file, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		return fmt.Errorf("AppendBytes failed to open file: %w", err)
+	}
+	defer file.Close()
+
+	_, err = file.Write(content)
+	if err != nil {
+		return fmt.Errorf("AppendBytes failed to append content to file: %w", err)
+	}
+
+	return nil
+}
+
 // CopyFile copies a file from source to destination.
 func CopyFile(src, dst string) error {
 	sourceFile, err := os.Open(src)
