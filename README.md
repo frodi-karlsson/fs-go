@@ -1,3 +1,5 @@
+[![Go Reference](https://pkg.go.dev/badge/github.com/frodi-karlsson/fs_go.svg)](https://pkg.go.dev/github.com/frodi-karlsson/fs_go)
+
 An exploratory project while learning Go.
 
 Nothing special here, but I might use this as a handy no-fuss file system utility in the future.
