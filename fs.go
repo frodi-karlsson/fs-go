@@ -94,6 +94,7 @@ func Exists(path string) (bool, error) {
 }
 
 // ReadDir reads the content of a directory and returns a list of file names.
+// The order of the files is not guaranteed.
 func ReadDir(path string) ([]string, error) {
 	file, err := os.Open(path)
 	if err != nil {
@@ -105,6 +106,7 @@ func ReadDir(path string) ([]string, error) {
 }
 
 // ReadDirRec reads the content of a directory recursively and returns a list of file names.
+// The order of the files is not guaranteed.
 func ReadDirRec(path string) ([]string, error) {
 	var files []string
 
