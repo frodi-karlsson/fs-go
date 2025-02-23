@@ -494,3 +494,32 @@ func TestWriteBytesWithMode(t *testing.T) {
 		}
 	})
 }
+
+func TestCopyFile(t *testing.T) {
+	// Expect to copy a file
+	t.Run("copy file", func(t *testing.T) {
+		src := "copy_file_src.txt"
+		dst := "copy_file_dst.txt"
+		defer os.Remove(src)
+		defer os.Remove(dst)
+
+		err := WriteText(src, "test content")
+		if err != nil {
+			t.Fatalf("WriteText failed: %v", err)
+		}
+
+		err = CopyFile(src, dst)
+		if err != nil {
+			t.Errorf("CopyFile failed: %v", err)
+		}
+
+		content, err := ReadText(dst)
+		if err != nil {
+			t.Errorf("ReadText failed: %v", err)
+		}
+
+		if content != "test content" {
+			t.Errorf("Expected content to be 'test content', got '%s'", content)
+		}
+	})
+}

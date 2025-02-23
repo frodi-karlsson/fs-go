@@ -1,7 +1,6 @@
 package fs_go
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -112,7 +111,7 @@ func ReadDirRec(path string) ([]string, error) {
 
 	err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			return fmt.Errorf("ReadDirRec failed to walk directory: %w", err)
+			return fmt.Errorf("ReadDirRec failed in walk function: %w", err)
 		}
 
 		if info.IsDir() {
@@ -177,45 +176,19 @@ func ReadText(path string) (string, error) {
 //	    return
 //	}
 func ReadBytes(path string) ([]byte, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return nil, fmt.Errorf("ReadBytes failed to open file: %w", err)
-	}
-	defer file.Close()
-
-	fileSize, err := GetSize(path)
-	if err != nil {
-		return nil, fmt.Errorf("ReadBytes failed to get file size: %w", err)
-	}
-
-	reader := bufio.NewReader(file)
-
-	content := make([]byte, fileSize)
-	totalBytesRead := 0
-	for totalBytesRead < fileSize {
-		bytesRead, err := reader.Read(content[totalBytesRead:])
-		if err != nil {
-			if err == io.EOF {
-				break // End of file reached
-			}
-			return nil, fmt.Errorf("ReadBytes failed to read file: %w", err)
-		}
-		totalBytesRead += bytesRead
-	}
-
-	return content, nil
+	return os.ReadFile(path)
 }
 
 // GetSize returns the size of a file in bytes.
 // Crucially, it returns int instead of int64. This is to make `make` easier to use
 // with the result of this function.
-func GetSize(path string) (int, error) {
+func GetSize(path string) (int64, error) {
 	info, err := os.Stat(path)
 	if err != nil {
 		return 0, fmt.Errorf("GetSize failed to get file stat: %w", err)
 	}
 
-	return int(info.Size()), nil
+	return info.Size(), nil
 }
 
 // WriteJson writes a struct to a file as JSON.
@@ -279,6 +252,28 @@ func WriteBytesWithMode(path string, content []byte, mode os.FileMode) error {
 	err := os.WriteFile(path, content, mode)
 	if err != nil {
 		return fmt.Errorf("WriteBytes failed to write content to file: %w", err)
+	}
+
+	return nil
+}
+
+// CopyFile copies a file from source to destination.
+func CopyFile(src, dst string) error {
+	sourceFile, err := os.Open(src)
+	if err != nil {
+		return fmt.Errorf("CopyFile failed to open source file: %w", err)
+	}
+	defer sourceFile.Close()
+
+	destinationFile, err := os.Create(dst)
+	if err != nil {
+		return fmt.Errorf("CopyFile failed to create destination file: %w", err)
+	}
+	defer destinationFile.Close()
+
+	_, err = io.Copy(destinationFile, sourceFile)
+	if err != nil {
+		return fmt.Errorf("CopyFile failed to copy: %w", err)
 	}
 
 	return nil
